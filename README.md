@@ -66,6 +66,26 @@ It will not:
   true if you want to use strong password checking in PAM using passwdqc
 * `['os-hardening']['auth']['pam']['passwdqc']['options'] = "min=disabled,disabled,16,12,8"`
   set to any option line (as a string) that you want to pass to passwdqc
+* `['os-hardening']['custom_pam']['auth'|'acount'|'password'|'session']`
+  Set customs pam, example pbis AD auth pam_lsass.
+  Example:
+
+    "os-hardening" : {
+      "custom_pam" : {
+        "auth" : [
+          "requisite     pam_lsass.so      smartcard_prompt    try_first_pass",
+          "sufficient    pam_lsass.so      try_first_pass",
+        ],
+        "account": [
+          "required     pam_lsass.so       unknown_ok",
+          "sufficient    pam_lsass.so",
+        ],
+        "password": [
+          "sufficient     pam_lsass.so      try_first_pass    use_authtok"
+        ]
+      }
+    }
+    
 * `['os-hardening']['security']['users']['allow'] = []`
   list of things, that a user is allowed to do. May contain: `change_user`
 * `['os-hardening']['security']['kernel']['enable_module_loading'] = true`

@@ -27,6 +27,7 @@ when 'rhel', 'fedora'
   default['os-hardening']['packages']['pam_cracklib'] = 'pam_cracklib'
   default['os-hardening']['packages']['pam_pwquality'] = 'libpwquality'
   default['os-hardening']['packages']['auditd'] = 'audit'
+  default['os-hardening']['custom_pam'] = []
 
   if node['platform_version'].to_f < 7
     default['os-hardening']['auth']['pam']['passwdqc']['enable']  = true

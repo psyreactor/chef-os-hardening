@@ -9,6 +9,11 @@ auth        required      pam_tally2.so deny=<%= node['os-hardening']['auth']['r
 <% end %>
 auth        required      pam_env.so
 auth        sufficient    pam_unix.so nullok try_first_pass
+<% if node['os-hardening']['custom_pam'].has_key?('auth') %>
+<% node['os-hardening']['custom_pam']['auth'].each do |pam| %>
+auth        <%= pam %>
+<% end %>
+<% end %>
 auth        requisite     pam_succeed_if.so uid >= 500 quiet
 auth        required      pam_deny.so
 
@@ -16,6 +21,11 @@ auth        required      pam_deny.so
 account     required      pam_tally2.so
 <% end %>
 account     required      pam_unix.so
+<% if node['os-hardening']['custom_pam'].has_key?('account') %>
+<% node['os-hardening']['custom_pam']['account'].each do |pam| %>
+account        <%= pam %>
+<% end %>
+<% end %>
 account     sufficient    pam_localuser.so
 account     sufficient    pam_succeed_if.so uid < 500 quiet
 account     required      pam_permit.so
@@ -31,9 +41,19 @@ password    requisite     pam_cracklib.so <%= node['os-hardening']['auth']['pam'
 # NSA 2.3.3.5 Upgrade Password Hashing Algorithm to SHA-512
 # NSA 2.3.3.6 Limit Password Reuse
 password    sufficient    pam_unix.so sha512 shadow nullok try_first_pass use_authtok remember=5
+<% if node['os-hardening']['custom_pam'].has_key?('password') %>
+<% node['os-hardening']['custom_pam']['password'].each do |pam| %>
+password        <%= pam %>
+<% end %>
+<% end %>
 password    required      pam_deny.so
 
 session     optional      pam_keyinit.so revoke
 session     required      pam_limits.so
+<% if node['os-hardening']['custom_pam'].has_key?('session') %>
+<% node['os-hardening']['custom_pam']['session'].each do |pam| %>
+session        <%= pam %>
+<% end %>
+<% end %>
 session     [success=1 default=ignore] pam_succeed_if.so service in crond quiet use_uid
 session     required      pam_unix.so
